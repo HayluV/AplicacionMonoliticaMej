@@ -1,0 +1,167 @@
+[
+    {
+        "id": "2c10ec147c2f5a16",
+        "type": "tab",
+        "label": "AplicacionMonolitica",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "5f08f84ad45c1fce",
+        "type": "socket.io in",
+        "z": "2c10ec147c2f5a16",
+        "name": "",
+        "server": "8c2b36001d8eaa3d",
+        "event": "eliminarCliente",
+        "x": 220,
+        "y": 340,
+        "wires": [
+            [
+                "b7c784914b9c799e",
+                "9fcdb3c127dc0df8"
+            ]
+        ]
+    },
+    {
+        "id": "b7c784914b9c799e",
+        "type": "socket.io out",
+        "z": "2c10ec147c2f5a16",
+        "name": "",
+        "server": "8c2b36001d8eaa3d",
+        "event": "clienteEliminado",
+        "eventType": "str",
+        "target": "",
+        "targetType": "str",
+        "data": "payload",
+        "dataType": "msg",
+        "x": 470,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "9fcdb3c127dc0df8",
+        "type": "debug",
+        "z": "2c10ec147c2f5a16",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 470,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "1926d2b23b3a5ded",
+        "type": "socket.io in",
+        "z": "2c10ec147c2f5a16",
+        "name": "",
+        "server": "8c2b36001d8eaa3d",
+        "event": "crearCliente",
+        "x": 220,
+        "y": 100,
+        "wires": [
+            [
+                "dd2d937cfc77443e",
+                "ecacecc49ff27f11"
+            ]
+        ]
+    },
+    {
+        "id": "dd2d937cfc77443e",
+        "type": "socket.io out",
+        "z": "2c10ec147c2f5a16",
+        "name": "",
+        "server": "8c2b36001d8eaa3d",
+        "event": "clienteCreado",
+        "eventType": "str",
+        "target": "",
+        "targetType": "str",
+        "data": "payload",
+        "dataType": "msg",
+        "x": 470,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "ecacecc49ff27f11",
+        "type": "debug",
+        "z": "2c10ec147c2f5a16",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 470,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "1e73c7c575085c4c",
+        "type": "debug",
+        "z": "2c10ec147c2f5a16",
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 470,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "c8a6f4d99164ac9e",
+        "type": "socket.io in",
+        "z": "2c10ec147c2f5a16",
+        "name": "",
+        "server": "8c2b36001d8eaa3d",
+        "event": "actualizarCliente",
+        "x": 220,
+        "y": 220,
+        "wires": [
+            [
+                "7a1fa81e7b5c0636",
+                "1e73c7c575085c4c"
+            ]
+        ]
+    },
+    {
+        "id": "7a1fa81e7b5c0636",
+        "type": "socket.io out",
+        "z": "2c10ec147c2f5a16",
+        "name": "",
+        "server": "8c2b36001d8eaa3d",
+        "event": "clienteActualizado",
+        "eventType": "str",
+        "target": "",
+        "targetType": "str",
+        "data": "payload",
+        "dataType": "msg",
+        "x": 470,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "8c2b36001d8eaa3d",
+        "type": "socket.io server",
+        "name": "AplicacionMonolitica",
+        "port": "1881",
+        "corsOrigin": "",
+        "corsMethods": "",
+        "corsAllowedHeaders": "",
+        "corsCredentials": ""
+    }
+]
