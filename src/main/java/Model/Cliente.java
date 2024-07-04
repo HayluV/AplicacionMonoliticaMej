@@ -3,12 +3,15 @@ package Model;
 import Datos.Conexion;
 import Entity.ECliente;
 import Entity.EResponse;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Cliente {
 
@@ -21,6 +24,7 @@ public class Cliente {
     private static final String SALDO_SQL = "SELECT SUM(mntsaldo) FROM cliente WHERE flgestado=1";
     private static final String NUMERO_SQL = "SELECT COUNT(numtelefono) FROM cliente WHERE numtelefono IS NOT NULL AND TRIM(numtelefono) != '' AND flgestado = 1";
     private static final String CONTEOELIMINADOS_SQL = "SELECT COUNT(idcliente) FROM cliente WHERE flgestado=0";
+    private static final String DASHBOARD_SQL = "SELECT flgestado, SUM(mntsaldo) AS total_saldo FROM cliente WHERE flgestado IN (0, 1) GROUP BY flgestado;";
 
     public static EResponse insertCliente(ECliente objCliente) throws SQLException {
         EResponse<EResponse> response = new EResponse<>();
@@ -152,14 +156,14 @@ public class Cliente {
     }
 
     public static int getCountCliente(ECliente objCliente) throws SQLException {
-        int conteoIdCliente= 0;
+        int conteoIdCliente = 0;
         Connection cn = Conexion.getConnection();
 
         try {
             PreparedStatement ps = cn.prepareStatement(CONTEO_SQL);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-               conteoIdCliente = rs.getInt(1);
+                conteoIdCliente = rs.getInt(1);
             }
         } catch (Exception e) {
         } finally {
@@ -167,9 +171,9 @@ public class Cliente {
         }
         return conteoIdCliente;
     }
-    
+
     public static float getTotalSaldoCliente(ECliente objCliente) throws SQLException {
-        float conteoSaldoCliente= 0;
+        float conteoSaldoCliente = 0;
         Connection cn = Conexion.getConnection();
 
         try {
@@ -177,7 +181,7 @@ public class Cliente {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 // Obtener el valor del saldo total desde la primera columna
-               conteoSaldoCliente = rs.getFloat(1);
+                conteoSaldoCliente = rs.getFloat(1);
             }
         } catch (Exception e) {
         } finally {
@@ -185,8 +189,9 @@ public class Cliente {
         }
         return conteoSaldoCliente;
     }
+
     public static int getCantidadTelefonoCliente(ECliente objCliente) throws SQLException {
-        int cantNumeroCliente= 0;
+        int cantNumeroCliente = 0;
         Connection cn = Conexion.getConnection();
 
         try {
@@ -194,7 +199,7 @@ public class Cliente {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 // Obtener el valor del saldo total desde la primera columna
-               cantNumeroCliente = rs.getInt(1);
+                cantNumeroCliente = rs.getInt(1);
             }
         } catch (Exception e) {
         } finally {
@@ -202,21 +207,45 @@ public class Cliente {
         }
         return cantNumeroCliente;
     }
+
     //PARA EL DASHBOARD:
-     public static int getCountClienteEliminado(ECliente objCliente) throws SQLException {
-        int conteoIdCliente= 0;
+    public static int getCountClienteEliminado(ECliente objCliente) throws SQLException {
+        int conteoIdCliente = 0;
         Connection cn = Conexion.getConnection();
 
         try {
             PreparedStatement ps = cn.prepareStatement(CONTEOELIMINADOS_SQL);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-               conteoIdCliente = rs.getInt(1);
+                conteoIdCliente = rs.getInt(1);
             }
         } catch (Exception e) {
         } finally {
             Conexion.closeConnection(cn);
         }
         return conteoIdCliente;
+    }
+
+    public static Map<Integer, BigDecimal> getTotalesPorEstado(ECliente cliente) throws SQLException {
+        Map<Integer, BigDecimal> totalesPorEstado = new HashMap<>();
+        Connection cn = null;
+
+        try {
+            cn = Conexion.getConnection();
+            PreparedStatement ps = cn.prepareStatement(DASHBOARD_SQL);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int estado = rs.getInt("flgestado");
+                BigDecimal totalSaldo = rs.getBigDecimal("total_saldo");
+                totalesPorEstado.put(estado, totalSaldo);
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error al obtener los totales por estado del cliente", e);
+        } finally {
+            Conexion.closeConnection(cn);
+        }
+
+        return totalesPorEstado;
     }
 }
