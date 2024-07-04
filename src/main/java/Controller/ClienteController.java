@@ -5,12 +5,9 @@ import Entity.EResponse;
 import Model.Cliente;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.annotation.WebServlet;
@@ -66,7 +63,7 @@ public class ClienteController extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
             String type = request.getParameter("type");
-            if ("1".equals(type)) {
+            if ("1".equals(type) || "10".equals(type)) {
                 List<ECliente> respuesta = (List<ECliente>) mantenimientoCliente(type, null);
                 JSONObject json = new JSONObject();
                 json.put("body", respuesta);
@@ -106,15 +103,7 @@ public class ClienteController extends HttpServlet {
                 PrintWriter out = response.getWriter();
                 out.print(json);
                 out.close();
-            } else if ("10".equals(type)) {
-                Map<Integer, BigDecimal> totalesPorEstado = (Map<Integer, BigDecimal>) mantenimientoCliente(type, null);
-                JSONObject json = new JSONObject();
-                json.put("dashboardData", totalesPorEstado);
-                response.setContentType("application/json");
-                PrintWriter out = response.getWriter();
-                out.print(json);
-                out.close();
-            }
+            } 
         } catch (SQLException ex) {
             Logger.getLogger(ClienteController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -125,8 +114,6 @@ public class ClienteController extends HttpServlet {
         List<ECliente> lstCliente = new ArrayList<>();
         int idCliente = 0;
         float saldoCliente = 0;
-        Map<Integer, BigDecimal> totalesPorEstadoMap = new HashMap<>();
-
         switch (type) {
             case "1":
                 lstCliente = Cliente.getCliente();
@@ -157,10 +144,10 @@ public class ClienteController extends HttpServlet {
                 idCliente = Cliente.getCountClienteEliminado(cliente);
                 break;
             case "10":
-                totalesPorEstadoMap = Cliente.getTotalesPorEstado(cliente);
+                lstCliente = Cliente.getSueldoCliente();
                 break;
         }
-        if (type.equals("1")) {
+        if (type.equals("1") || type.equals("10")) {
             return lstCliente;
         } else if (type.equals("2") || type.equals("3") || type.equals("4")) {
             return response;
@@ -168,9 +155,7 @@ public class ClienteController extends HttpServlet {
             return idCliente;
         } else if (type.equals("7")) {
             return saldoCliente;
-        } else if (type.equals("10")) {
-            return totalesPorEstadoMap;
-        }
+        } 
         return true;
     }
 

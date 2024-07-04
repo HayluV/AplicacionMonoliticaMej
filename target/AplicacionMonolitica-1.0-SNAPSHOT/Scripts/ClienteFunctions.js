@@ -153,14 +153,14 @@ $("document").ready(function () {
         totalClientes();
         totalmntSaldo();
         totalcantTelefono();
-        totalClientesEliminados();totalClientes();
-        totalmntSaldo();
-        totalcantTelefono();
         totalClientesEliminados();
     });
 
     socket.on("clienteCreado", (arg) => {
-        
+        totalClientes();
+        totalmntSaldo();
+        totalcantTelefono();
+        totalClientesEliminados();
         arg.type = 5;
         $.ajax({
             type: "GET",
