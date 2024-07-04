@@ -3,20 +3,17 @@ package Model;
 import Datos.Conexion;
 import Entity.ECliente;
 import Entity.EResponse;
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Cliente {
 
     private static final String INSERT_SQL = "INSERT INTO cliente (descnombre,descapellido,descemail,numtelefono,mntsaldo,flgestado) VALUES (?,?,?,?,?,1)";
-    private static final String SELECT_SQL = "SELECT idcliente,descnombre,descapellido,descemail,numtelefono,mntsaldo FROM cliente WHERE flgestado=1";
+    private static final String SELECT_SQL = "SELECT idcliente, descnombre, descapellido, descemail, numtelefono, mntsaldo FROM (SELECT idcliente, descnombre, descapellido, descemail, numtelefono, mntsaldo FROM cliente WHERE flgestado = 1 ORDER BY idcliente) AS data LIMIT ? OFFSET ?";
     private static final String DELETE_SQL = "UPDATE cliente SET flgestado=0 WHERE idcliente = ?"; //PARA ELIMINAR
     private static final String UPDATE_SQL = "UPDATE cliente SET descnombre=?, descapellido=?, descemail=?, numtelefono=?, mntsaldo=? WHERE idcliente=?";
     private static final String SELECTID_SQL = "SELECT idcliente FROM cliente WHERE descnombre=? AND descapellido=? AND descemail=? AND numtelefono=? AND mntsaldo=? AND flgestado=1";
@@ -24,7 +21,7 @@ public class Cliente {
     private static final String SALDO_SQL = "SELECT SUM(mntsaldo) FROM cliente WHERE flgestado=1";
     private static final String NUMERO_SQL = "SELECT COUNT(numtelefono) FROM cliente WHERE numtelefono IS NOT NULL AND TRIM(numtelefono) != '' AND flgestado = 1";
     private static final String CONTEOELIMINADOS_SQL = "SELECT COUNT(idcliente) FROM cliente WHERE flgestado=0";
-     private static final String SUELDOCLIENTE_SQL = "SELECT descnombre,mntsaldo FROM cliente WHERE flgestado=1 ORDER BY mntsaldo DESC LIMIT 5;";
+    private static final String SUELDOCLIENTE_SQL = "SELECT descnombre,mntsaldo FROM cliente WHERE flgestado=1 ORDER BY mntsaldo DESC LIMIT 5;";
 
     public static EResponse insertCliente(ECliente objCliente) throws SQLException {
         EResponse<EResponse> response = new EResponse<>();
@@ -54,12 +51,15 @@ public class Cliente {
         return response;
     }
 
-    public static List<ECliente> getCliente() throws SQLException {
+    public static List<ECliente> getCliente(String limit, String offset) throws SQLException {
         List<ECliente> lstCliente = new ArrayList<>();
         Connection cn = Conexion.getConnection();
 
         try {
             PreparedStatement ps = cn.prepareStatement(SELECT_SQL);
+            ps.setInt(1, Integer.parseInt(limit));
+            ps.setInt(2, Integer.parseInt(offset));
+
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 ECliente objCliente = new ECliente();
