@@ -1,46 +1,65 @@
 $("document").ready(function () {
-    $.ajax({
-        type: "GET",
-        data:
-                {
-                    type: "1"
-                },
-        url: "ServletCliente",
-        beforeSend: function () {
-
-        }, success: function (arg) {
-            console.log(arg);
-            var content = "";
-            for (var i = 0; i < arg.body.length; i++) {
-                content += `<tr id="${arg.body[i].idcliente}">`;
-                content += `<td>${arg.body[i].idcliente}</td>`;
-                content += `<td>${arg.body[i].descnombre}</td>`;
-                content += `<td>${arg.body[i].descapellido}</td>`;
-                content += `<td>${arg.body[i].descemail}</td>`;
-                content += `<td>${arg.body[i].numtelefono}</td>`;
-                content += `<td>${arg.body[i].mntsaldo}</td>`;
-                content += `<td>
-                            <button class="btn btn-sm btn-warning btnActualizarCliente btnActualizar" 
-                                    data-idcliente="${arg.body[i].idcliente}" 
-                                    data-descnombre="${arg.body[i].descnombre}" 
-                                    data-descapellido="${arg.body[i].descapellido}" 
-                                    data-descemail="${arg.body[i].descemail}" 
-                                    data-numtelefono="${arg.body[i].numtelefono}" 
-                                    data-mntsaldo="${arg.body[i].mntsaldo}">
-                                    <i class="fa-solid fa-marker"></i>
-                                </button>
-                            <button class="btn btn-sm btn-danger btnEliminar" data-client="${arg.body[i].idcliente}">
-                                <i class="fa-solid fa-trash-can"></i>
+    $('#tableClientes').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+            "url": "ServletCliente",
+            "type": "GET",
+            "data": function (d) {
+                d.type = "1";
+            },
+            "dataSrc": function (json) {
+                console.log(json)
+                return json.data;
+            }
+        },
+        "searching": false,
+        "columns": [
+            {"data": "idcliente"},
+            {"data": "descnombre"},
+            {"data": "descapellido"},
+            {"data": "descemail"},
+            {"data": "numtelefono"},
+            {"data": "mntsaldo"},
+            {
+                "data": null,
+                "render": function (row) {
+                    return `
+                        <button class="btn btn-sm btn-warning btnActualizarCliente btnActualizar" 
+                                data-idcliente="${row.idcliente}" 
+                                data-descnombre="${row.descnombre}" 
+                                data-descapellido="${row.descapellido}" 
+                                data-descemail="${row.descemail}" 
+                                data-numtelefono="${row.numtelefono}" 
+                                data-mntsaldo="${row.mntsaldo}">
+                                <i class="fa-solid fa-marker"></i>
                             </button>
-                        </td>`;
-                content += `</tr>`;
+                        <button class="btn btn-sm btn-danger btnEliminar" data-nombre="${row.descnombre} ${row.descapellido}" data-correo="${row.descemail}" data-client="${row.idcliente}">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    `;
+                }
             }
-            $("#bodyTable").html(content);
-            // Reinici DataTables después de actualizar el contenido
-            if ($.fn.DataTable.isDataTable('#tableClientes')) {
-                $('#tableClientes').DataTable().destroy(); // Primero destruye la instancia actual si existe
+        ],
+        "createdRow": function (row, data) {
+            $(row).attr('id', data.idcliente);
+        },
+        "language": {
+            "emptyTable": "No se encontraron datos.",
+            "info": " ",
+            "infoEmpty": " ",
+            "infoFiltered": "",
+            "lengthMenu": "Mostrar _MENU_ registros",
+            "loadingRecords": "Cargando...",
+            "processing": "Procesando...",
+            "search": "Buscar:",
+            "zeroRecords": "No se encontraron registros coincidentes",
+            "paginate": {
+                "first": "Primero",
+                "last": "Ultimo",
+                "next": "Siguiente",
+                "previous": "Anterior"
             }
-            $('#tableClientes').DataTable(); // Vuelve a inicializar DataTables
         }
     });
 
@@ -107,6 +126,7 @@ $("document").ready(function () {
             beforeSend: function () {},
             success: function (response) {
                 if (response.success) {
+                    data.pag = $('#tableClientes').DataTable().page.info().page;
                     socket.emit("actualizarCliente", data);
                     alert("Cliente actualizado correctamente");
                     $(".cerrarmodal").click();
@@ -157,83 +177,8 @@ $("document").ready(function () {
         totalcantTelefono();
     });
 
-    socket.on("clienteCreado", (arg) => {
-        totalClientes();
-        totalmntSaldo();
-        totalcantTelefono();
-        arg.type = 5;
-        $.ajax({
-            type: "GET",
-            data: arg,
-            url: "ServletCliente",
-            beforeSend: function () {
-            },
-            success: function (response) {
-                content = `<tr id="${response.body}">`;
-                content += `<td>${response.body}</td>`;
-                content += `<td>${arg.descnombre}</td>`;
-                content += `<td>${arg.descapellido}</td>`;
-                content += `<td>${arg.descemail}</td>`;
-                content += `<td>${arg.numtelefono}</td>`;
-                content += `<td>${arg.mntsaldo}</td>`;
-                content += `<td>
-                            <button class="btn btn-sm btn-warning btnActualizarCliente btnActualizar" 
-                                    data-idcliente="${response.body}" 
-                                    data-descnombre="${arg.descnombre}" 
-                                    data-descapellido="${arg.descapellido}" 
-                                    data-descemail="${arg.descemail}" 
-                                    data-numtelefono="${arg.numtelefono}" 
-                                    data-mntsaldo="${arg.mntsaldo}">
-                                    <i class="fa-solid fa-marker"></i>
-                                </button>
-                            <button class="btn btn-sm btn-danger btnEliminar" data-client="${response.body}">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                        </td>`;
-                content += `</tr>`;
-                $("#bodyTable").append(content);
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.error("Error en la solicitud AJAX: ", textStatus, errorThrown);
-            }
-        });
-    });
 
-    socket.on("clienteActualizado", (arg) => {
-        totalClientes();
-        totalmntSaldo();
-        totalcantTelefono();
-        content = `<tr id="${arg.idcliente}">`;
-        content += `<td>${arg.idcliente}</td>`;
-        content += `<td>${arg.descnombre}</td>`;
-        content += `<td>${arg.descapellido}</td>`;
-        content += `<td>${arg.descemail}</td>`;
-        content += `<td>${arg.numtelefono}</td>`;
-        content += `<td>${arg.mntsaldo}</td>`;
-        content += `<td>
-                    <button class="btn btn-sm btn-warning btnActualizarCliente btnActualizar" 
-                            data-idcliente="${arg.idcliente}" 
-                            data-descnombre="${arg.descnombre}" 
-                            data-descapellido="${arg.descapellido}" 
-                            data-descemail="${arg.descemail}" 
-                            data-numtelefono="${arg.numtelefono}" 
-                            data-mntsaldo="${arg.mntsaldo}">
-                            <i class="fa-solid fa-marker"></i>
-                        </button>
-                    <button class="btn btn-sm btn-danger btnEliminar" data-client="${arg.idcliente}">
-                        <i class="fa-solid fa-trash-can"></i>
-                    </button>
-                </td>`;
-        content += `</tr>`;
-        $("#" + arg.idcliente).replaceWith(content);
-    });
 
-    socket.on("clienteEliminado", (arg) => {
-        totalClientes();
-        totalmntSaldo();
-        totalcantTelefono();
-        $("#" + arg.idcliente).remove();
-    });
     function totalClientes() {
         $.ajax({
             type: "GET",
@@ -256,7 +201,47 @@ $("document").ready(function () {
         });
     }
     ;
+    socket.on("clienteCreado", () => {
+        var table = $('#tableClientes').DataTable();
+        info = table.page.info()
+        $.ajax({
+            type: "GET",
+            data: {type: 6},
+            url: "ServletCliente",
+            success: function (response) {
+                if (response.body >= ((info.length * (info.page + 1)) - info.length) &&
+                        response.body <= (info.length * (info.page + 1))) {
+                    table.page(info.page).draw(false);
+                }
+                totalClientes();
+                totalmntSaldo();
+                totalcantTelefono();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error("Error en la solicitud AJAX: ", textStatus, errorThrown);
+                reject(errorThrown);
+            }
+        });
+    });
 
+    socket.on("clienteActualizado", (arg) => {
+        const pag = $('#tableClientes').DataTable().page.info().page;
+        if (arg.pag == pag) {
+            $('#tableClientes').DataTable().page(pag).draw(false);
+        }
+        totalClientes();
+        totalmntSaldo();
+        totalcantTelefono();
+    });
+
+    socket.on("clienteEliminado", (arg) => {
+        var table = $('#tableClientes').DataTable();
+        var row = table.row("#" + arg.idcliente);
+        row.remove().draw(false);
+        totalClientes();
+        totalmntSaldo();
+        totalcantTelefono();
+    });
     function totalmntSaldo() {
         $.ajax({
             type: "GET",
@@ -278,8 +263,9 @@ $("document").ready(function () {
             }
         });
 
-    };
-    function totalcantTelefono(){
+    }
+    ;
+    function totalcantTelefono() {
         $.ajax({
             type: "GET",
             data: {
@@ -292,15 +278,16 @@ $("document").ready(function () {
                 console.log('cantidad numero telefono: ', response);
                 var content = "";
                 content += `<p class="card-text">${response.body}</p>`;
-                
+
                 $("#totalCantTelefono").html(content);
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.error("Error en la solicitud AJAX: ", textStatus, errorThrown);
             }
         });
-    };
-    function totalClientesEliminados(){
+    }
+    ;
+    function totalClientesEliminados() {
         $.ajax({
             type: "GET",
             data: {
@@ -313,15 +300,16 @@ $("document").ready(function () {
                 console.log('contenido cantidad', response);
                 var content = "";
                 content += `<p name="conteo" class="card-text">${response.body}</p>`;
-                
+
                 $("#totalclientes").html(content);
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.error("Error en la solicitud AJAX: ", textStatus, errorThrown);
             }
         });
-    };
-    
+    }
+    ;
+
     $(document).on("click", ".btnActualizarCliente", function () {
         $("#modalUpdateCliente").modal("show");
     });

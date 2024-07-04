@@ -16,7 +16,7 @@ import java.util.Map;
 public class Cliente {
 
     private static final String INSERT_SQL = "INSERT INTO cliente (descnombre,descapellido,descemail,numtelefono,mntsaldo,flgestado) VALUES (?,?,?,?,?,1)";
-    private static final String SELECT_SQL = "SELECT idcliente,descnombre,descapellido,descemail,numtelefono,mntsaldo FROM cliente WHERE flgestado=1";
+    private static final String SELECT_SQL = "SELECT idcliente, descnombre, descapellido, descemail, numtelefono, mntsaldo FROM (SELECT idcliente, descnombre, descapellido, descemail, numtelefono, mntsaldo FROM cliente WHERE flgestado = 1 ORDER BY idcliente) AS data LIMIT ? OFFSET ?";
     private static final String DELETE_SQL = "UPDATE cliente SET flgestado=0 WHERE idcliente = ?"; //PARA ELIMINAR
     private static final String UPDATE_SQL = "UPDATE cliente SET descnombre=?, descapellido=?, descemail=?, numtelefono=?, mntsaldo=? WHERE idcliente=?";
     private static final String SELECTID_SQL = "SELECT idcliente FROM cliente WHERE descnombre=? AND descapellido=? AND descemail=? AND numtelefono=? AND mntsaldo=? AND flgestado=1";
@@ -24,7 +24,6 @@ public class Cliente {
     private static final String SALDO_SQL = "SELECT SUM(mntsaldo) FROM cliente WHERE flgestado=1";
     private static final String NUMERO_SQL = "SELECT COUNT(numtelefono) FROM cliente WHERE numtelefono IS NOT NULL AND TRIM(numtelefono) != '' AND flgestado = 1";
     private static final String CONTEOELIMINADOS_SQL = "SELECT COUNT(idcliente) FROM cliente WHERE flgestado=0";
-    private static final String DASHBOARD_SQL = "SELECT flgestado, SUM(mntsaldo) AS total_saldo FROM cliente WHERE flgestado IN (0, 1) GROUP BY flgestado;";
 
     public static EResponse insertCliente(ECliente objCliente) throws SQLException {
         EResponse<EResponse> response = new EResponse<>();
@@ -54,12 +53,15 @@ public class Cliente {
         return response;
     }
 
-    public static List<ECliente> getCliente() throws SQLException {
+    public static List<ECliente> getCliente(String limit, String offset) throws SQLException {
         List<ECliente> lstCliente = new ArrayList<>();
         Connection cn = Conexion.getConnection();
 
         try {
             PreparedStatement ps = cn.prepareStatement(SELECT_SQL);
+            ps.setInt(1, Integer.parseInt(limit));
+            ps.setInt(2, Integer.parseInt(offset));
+
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 ECliente objCliente = new ECliente();
@@ -226,26 +228,4 @@ public class Cliente {
         return conteoIdCliente;
     }
 
-    public static Map<Integer, BigDecimal> getTotalesPorEstado(ECliente cliente) throws SQLException {
-        Map<Integer, BigDecimal> totalesPorEstado = new HashMap<>();
-        Connection cn = null;
-
-        try {
-            cn = Conexion.getConnection();
-            PreparedStatement ps = cn.prepareStatement(DASHBOARD_SQL);
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                int estado = rs.getInt("flgestado");
-                BigDecimal totalSaldo = rs.getBigDecimal("total_saldo");
-                totalesPorEstado.put(estado, totalSaldo);
-            }
-        } catch (SQLException e) {
-            throw new SQLException("Error al obtener los totales por estado del cliente", e);
-        } finally {
-            Conexion.closeConnection(cn);
-        }
-
-        return totalesPorEstado;
-    }
 }
