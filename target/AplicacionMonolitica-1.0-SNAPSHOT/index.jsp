@@ -27,7 +27,7 @@
                 </button>
             </div>
             <div class="col-md-9 table-responsive mt-2">
-                <table class="table table-sm table-hover table-bordered">
+                <table class="table table-sm table-hover table-bordered"  id="tableClientes">
                     <thead>
                         <tr>
                             <th>#</th>

@@ -36,6 +36,11 @@ $("document").ready(function () {
                 content += `</tr>`;
             }
             $("#bodyTable").html(content);
+            // Reinici DataTables después de actualizar el contenido
+            if ($.fn.DataTable.isDataTable('#tableClientes')) {
+                $('#tableClientes').DataTable().destroy(); // Primero destruye la instancia actual si existe
+            }
+            $('#tableClientes').DataTable(); // Vuelve a inicializar DataTables
         }
     });
 
@@ -191,7 +196,7 @@ $("document").ready(function () {
             }
         });
     });
-    
+
     socket.on("clienteActualizado", (arg) => {
         totalClientes();
         totalmntSaldo();
@@ -225,7 +230,7 @@ $("document").ready(function () {
         totalmntSaldo();
         $("#" + arg.idcliente).remove();
     });
-    function totalClientes(){
+    function totalClientes() {
         $.ajax({
             type: "GET",
             data: {
@@ -238,16 +243,17 @@ $("document").ready(function () {
                 console.log('contenido cantidad', response);
                 var content = "";
                 content += `<p name="conteo" class="card-text">${response.body}</p>`;
-                
+
                 $("#totalclientes").html(content);
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.error("Error en la solicitud AJAX: ", textStatus, errorThrown);
             }
         });
-    };
-    
-    function totalmntSaldo(){
+    }
+    ;
+
+    function totalmntSaldo() {
         $.ajax({
             type: "GET",
             data: {
@@ -260,14 +266,15 @@ $("document").ready(function () {
                 console.log('cantidad saldo: ', response);
                 var content = "";
                 content += `<p class="card-text">s/.${response.body}</p>`;
-                
+
                 $("#totalSaldo").html(content);
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.error("Error en la solicitud AJAX: ", textStatus, errorThrown);
             }
         });
-    };
+    }
+    ;
 
     $(document).on("click", ".btnActualizarCliente", function () {
         $("#modalUpdateCliente").modal("show");

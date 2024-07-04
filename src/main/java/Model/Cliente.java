@@ -20,6 +20,7 @@ public class Cliente {
     private static final String CONTEO_SQL = "SELECT COUNT(idcliente) FROM cliente WHERE flgestado=1";
     
     private static final String SALDO_SQL = "SELECT SUM(mntsaldo) FROM cliente WHERE flgestado=1";
+    private static final String DASHBOARD_SQL = "SELECT SUM(mntsaldo) FROM cliente WHERE flgestado=1";
 
     public static EResponse insertCliente(ECliente objCliente) throws SQLException {
         EResponse<EResponse> response = new EResponse<>();
