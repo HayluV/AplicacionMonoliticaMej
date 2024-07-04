@@ -208,7 +208,7 @@ public class Cliente {
         Connection cn = Conexion.getConnection();
 
         try {
-            PreparedStatement ps = cn.prepareStatement(CONTEO_SQL);
+            PreparedStatement ps = cn.prepareStatement(CONTEOELIMINADOS_SQL);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                conteoIdCliente = rs.getInt(1);

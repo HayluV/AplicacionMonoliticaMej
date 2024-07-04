@@ -1,10 +1,8 @@
 $("document").ready(function () {
+    
     $.ajax({
         type: "GET",
-        data:
-                {
-                    type: "1"
-                },
+        data:{type: "1"},
         url: "ServletCliente",
         beforeSend: function () {
 
@@ -150,12 +148,14 @@ $("document").ready(function () {
         totalClientes();
         totalmntSaldo();
         totalcantTelefono();
+        totalClientesEliminados();totalClientes();
+        totalmntSaldo();
+        totalcantTelefono();
+        totalClientesEliminados();
     });
 
     socket.on("clienteCreado", (arg) => {
-        totalClientes();
-        totalmntSaldo();
-        totalcantTelefono();
+        
         arg.type = 5;
         $.ajax({
             type: "GET",
@@ -198,6 +198,7 @@ $("document").ready(function () {
         totalClientes();
         totalmntSaldo();
         totalcantTelefono();
+        totalClientesEliminados();
         content = `<tr id="${arg.idcliente}">`;
         content += `<td>${arg.idcliente}</td>`;
         content += `<td>${arg.descnombre}</td>`;
@@ -227,6 +228,7 @@ $("document").ready(function () {
         totalClientes();
         totalmntSaldo();
         totalcantTelefono();
+        totalClientesEliminados();
         $("#" + arg.idcliente).remove();
     });
     function totalClientes(){
@@ -241,9 +243,11 @@ $("document").ready(function () {
             success: function (response) {
                 console.log('contenido cantidad', response);
                 var content = "";
+                var content2 = "";
                 content += `<p name="conteo" class="card-text">${response.body}</p>`;
-                
+                content2 += `<p class="card-text text-center" id="cantidadClientes">${response.body}</p>`;
                 $("#totalclientes").html(content);
+                $("#cantidadClientes").html(content2);
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.error("Error en la solicitud AJAX: ", textStatus, errorThrown);
@@ -282,7 +286,7 @@ $("document").ready(function () {
             beforeSend: function () {
             },
             success: function (response) {
-                console.log('cantidad numero telefono: ', response);
+                console.log('cantidad número teléfono: ', response);
                 var content = "";
                 content += `<p class="card-text">${response.body}</p>`;
                 
@@ -305,9 +309,8 @@ $("document").ready(function () {
             success: function (response) {
                 console.log('contenido cantidad', response);
                 var content = "";
-                content += `<p name="conteo" class="card-text">${response.body}</p>`;
-                
-                $("#totalclientes").html(content);
+                content += `<p class="card-text text-center" id= "cantidadClientesEliminados">${response.body}</p>`;
+                $("#cantidadClientesEliminados").html(content);
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.error("Error en la solicitud AJAX: ", textStatus, errorThrown);

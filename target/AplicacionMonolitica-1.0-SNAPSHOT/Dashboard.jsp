@@ -24,8 +24,9 @@
                 <div class="col-md-4">
                     <div class="card" id="" style="border: 1px solid darkturquoise;">
                         <div class="row g-0">
-                            <div class="card-body col-md-8 d-flex align-items-center justify-content-center">
-                              <h5 class="card-title text-center">Clientes</h5>
+                            <div class="card-body col-md-8  align-items-center justify-content-center">
+                                <h5 class="card-title text-center">Clientes</h5>
+                                <p class="card-text text-center" id="cantidadClientes"></p>
                             </div>
                             <div class="card-body col-md-4 d-flex align-items-center justify-content-center">
                               <p class="card-text" id=""><i class="fa-solid fa-users fa-2x"></i></p>
@@ -37,9 +38,9 @@
                 <div class="col-md-4">
                     <div class="card" id="" style="border: 1px solid darkturquoise;">
                         <div class="row g-0">
-                            <div class="card-body col-md-8 d-flex align-items-center justify-content-center">
+                            <div class="card-body col-md-8 align-items-center justify-content-center">
                               <h5 class="card-title text-center">Clientes nuevos</h5>
-                              
+                              <p class="card-text text-center" id="cantidadClientes"></p>
                             </div>
                             <div class="card-body col-md-4 d-flex align-items-center justify-content-center">
                               <p class="card-text" id=""><i class="fa-solid fa-eye fa-2x"></i></p>
@@ -51,8 +52,9 @@
                 <div class="col-md-4">
                     <div class="card" id="" style="border: 1px solid darkturquoise;">
                         <div class="row g-0">
-                            <div class="card-body col-md-8 d-flex align-items-center justify-content-center">
+                            <div class="card-body col-md-8 align-items-center justify-content-center">
                               <h5 class="card-title text-center">Clientes eliminados</h5>
+                              <p class="card-text text-center" id="cantidadClientesEliminados"></p>
                             </div>
                             <div class="card-body col-md-4 d-flex align-items-center justify-content-center">
                               <p class="card-text" id=""><i class="fa-solid fa-trash fa-2x"></i></p>
