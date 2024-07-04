@@ -154,11 +154,13 @@ $("document").ready(function () {
         socket.emit("socket_user", "Se conectó un usuario");
         totalClientes();
         totalmntSaldo();
+        totalcantTelefono();
     });
 
     socket.on("clienteCreado", (arg) => {
         totalClientes();
         totalmntSaldo();
+        totalcantTelefono();
         arg.type = 5;
         $.ajax({
             type: "GET",
@@ -200,6 +202,7 @@ $("document").ready(function () {
     socket.on("clienteActualizado", (arg) => {
         totalClientes();
         totalmntSaldo();
+        totalcantTelefono();
         content = `<tr id="${arg.idcliente}">`;
         content += `<td>${arg.idcliente}</td>`;
         content += `<td>${arg.descnombre}</td>`;
@@ -228,6 +231,7 @@ $("document").ready(function () {
     socket.on("clienteEliminado", (arg) => {
         totalClientes();
         totalmntSaldo();
+        totalcantTelefono();
         $("#" + arg.idcliente).remove();
     });
     function totalClientes() {
@@ -273,9 +277,51 @@ $("document").ready(function () {
                 console.error("Error en la solicitud AJAX: ", textStatus, errorThrown);
             }
         });
-    }
-    ;
 
+    };
+    function totalcantTelefono(){
+        $.ajax({
+            type: "GET",
+            data: {
+                type: "8"
+            },
+            url: "ServletCliente",
+            beforeSend: function () {
+            },
+            success: function (response) {
+                console.log('cantidad numero telefono: ', response);
+                var content = "";
+                content += `<p class="card-text">${response.body}</p>`;
+                
+                $("#totalCantTelefono").html(content);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error("Error en la solicitud AJAX: ", textStatus, errorThrown);
+            }
+        });
+    };
+    function totalClientesEliminados(){
+        $.ajax({
+            type: "GET",
+            data: {
+                type: "9"
+            },
+            url: "ServletCliente",
+            beforeSend: function () {
+            },
+            success: function (response) {
+                console.log('contenido cantidad', response);
+                var content = "";
+                content += `<p name="conteo" class="card-text">${response.body}</p>`;
+                
+                $("#totalclientes").html(content);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error("Error en la solicitud AJAX: ", textStatus, errorThrown);
+            }
+        });
+    };
+    
     $(document).on("click", ".btnActualizarCliente", function () {
         $("#modalUpdateCliente").modal("show");
     });

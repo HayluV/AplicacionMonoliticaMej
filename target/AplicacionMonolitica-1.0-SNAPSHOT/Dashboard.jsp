@@ -20,83 +20,98 @@
                     <span class="hamb-bottom"></span>
                 </button>
 
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="card" id="" style="border: 1px solid darkturquoise;">
-                            <div class="row g-0">
-                                <div class="card-body col-md-8 d-flex align-items-center justify-content-center">
-                                    <h5 class="card-title text-center">Clientes</h5>
-                                </div>
-                                <div class="card-body col-md-4 d-flex align-items-center justify-content-center">
-                                    <p class="card-text" id=""><i class="fa-solid fa-users fa-2x"></i></p>
+                <body>
+                    <div id="page-content-wrapper">
+                        <button type="button" class="hamburger animated fadeInLeft is-closed" data-toggle="offcanvas">
+                            <span class="hamb-top"></span>
+                            <span class="hamb-middle"></span>
+                            <span class="hamb-bottom"></span>
+                        </button>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card" id="" style="border: 1px solid darkturquoise;">
+                                    <div class="row g-0">
+                                        <div class="card-body col-md-8 d-flex align-items-center justify-content-center">
+                                            <h5 class="card-title text-center">Clientes</h5>
+                                        </div>
+                                        <div class="card-body col-md-4 d-flex align-items-center justify-content-center">
+                                            <p class="card-text" id=""><i class="fa-solid fa-users fa-2x"></i></p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <div class="col-md-4">
-                        <div class="card" id="" style="border: 1px solid darkturquoise;">
-                            <div class="row g-0">
-                                <div class="card-body col-md-8 d-flex align-items-center justify-content-center">
-                                    <h5 class="card-title text-center">Clientes nuevos</h5>
-                                </div>
-                                <div class="card-body col-md-4 d-flex align-items-center justify-content-center">
-                                    <p class="card-text" id=""><i class="fa-solid fa-eye fa-2x"></i></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                            <div class="col-md-4">
+                                <div class="card" id="" style="border: 1px solid darkturquoise;">
+                                    <div class="row g-0">
+                                        <div class="card-body col-md-8 d-flex align-items-center justify-content-center">
+                                            <h5 class="card-title text-center">Clientes nuevos</h5>
 
-                    <div class="col-md-4">
-                        <div class="card" id="" style="border: 1px solid darkturquoise;">
-                            <div class="row g-0">
-                                <div class="card-body col-md-8 d-flex align-items-center justify-content-center">
-                                    <h5 class="card-title text-center">Clientes eliminados</h5>
-                                </div>
-                                <div class="card-body col-md-4 d-flex align-items-center justify-content-center">
-                                    <p class="card-text" id=""><i class="fa-solid fa-trash fa-2x"></i></p>
+                                        </div>
+                                        <div class="card-body col-md-4 d-flex align-items-center justify-content-center">
+                                            <p class="card-text" id=""><i class="fa-solid fa-eye fa-2x"></i></p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                </div>
-                <div class="containerGraficos">
-                    <div class="row">
-                        <div clas="col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                            <div id="chart1" class="chart"></div>
-                        </div>
-                    </div>
-                </div>
+                            <div class="col-md-4">
+                                <div class="card" id="" style="border: 1px solid darkturquoise;">
+                                    <div class="row g-0">
+                                        <div class="card-body col-md-8 d-flex align-items-center justify-content-center">
+                                            <h5 class="card-title text-center">Clientes eliminados</h5>
+                                        </div>
+                                        <div class="card-body col-md-4 d-flex align-items-center justify-content-center">
+                                            <p class="card-text" id=""><i class="fa-solid fa-trash fa-2x"></i></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-            </div>
-        <jsp:include page="PartialView/Footer.jsp"></jsp:include>
-        <jsp:include page="PartialView/Sidebar.jsp"></jsp:include>
-    </body>
-    <script>
-        const getOptionChart1 = () => {
-            return{
-                xAxis: {
-                    type: 'category',
-                    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-                },
-                yAxis: {
-                    type: 'value'
-                },
-                series: [
-                    {
-                        data: [150, 230, 224, 218, 135, 147, 260],
-                        type: 'line'
-                    }
-                ]
-            };
-        };
-        const initCharts = () => {
-            const chart1 = echarts.init(document.getElementById("chart1"));
-            chart1.setOption(getOptionChart1());
-        };
-        window.addEventListener("load", () => {
-            initCharts();
-        });
-    </script>
+                        </div>
+                        
+                            <div class="containerGraficos">
+                                <div class="row">
+                                    <div clas="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                        <div id="chart1" class="chart"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    <jsp:include page="PartialView/Footer.jsp"></jsp:include>
+                    <jsp:include page="PartialView/Sidebar.jsp"></jsp:include>
+                    <script src="Scripts/ClienteFunctions.js"></script>
+                    <script src="Scripts/graficos.js"></script>
+
+            </body>
+            <script>
+                const getOptionChart1 = () => {
+                    return{
+                        xAxis: {
+                            type: 'category',
+                            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sund']
+                        },
+                        yAxis: {
+                            type: 'value'
+                        },
+                        series: [
+                            {
+                                data: [120, 200, 150, 80, 70, 110, 130],
+                                type: 'bar'
+                            }
+                        ]
+                    };
+                };
+                const initCharts = () => {
+                    const chart1 = echarts.init(document.getElementById("chart1"));
+                    chart1.setOption(getOptionChart1());
+                };
+                window.addEventListener("load", () => {
+                    initCharts();
+                });
+
+
+            </script>
 
