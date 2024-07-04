@@ -9,6 +9,8 @@
         <script src="https://kit.fontawesome.com/233c0f00ee.js" crossorigin="anonymous"></script>
         <!-- apache echarts-->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.2.2/echarts.min.js"></script>
+
         <link href="css/graficos.css" rel="stylesheet" type="text/css"/>
         <jsp:include page="PartialView/Header.jsp"></jsp:include>
         </head>
@@ -70,48 +72,65 @@
                             </div>
 
                         </div>
-                        
-                            <div class="containerGraficos">
-                                <div class="row">
-                                    <div clas="col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                        <div id="chart1" class="chart"></div>
-                                    </div>
+
+                        <div class="containerGraficos">
+                            <div class="row">
+                                <div clas="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                    <div id="chart1" class="chart" style="width: 600px; height: 400px;"></div>
                                 </div>
                             </div>
-
                         </div>
-                    <jsp:include page="PartialView/Footer.jsp"></jsp:include>
-                    <jsp:include page="PartialView/Sidebar.jsp"></jsp:include>
+
+                    </div>
+                <jsp:include page="PartialView/Footer.jsp"></jsp:include>
+                <jsp:include page="PartialView/Sidebar.jsp"></jsp:include>
                     <script src="Scripts/ClienteFunctions.js"></script>
-                    <script src="Scripts/graficos.js"></script>
 
-            </body>
-            <script>
-                const getOptionChart1 = () => {
-                    return{
-                        xAxis: {
-                            type: 'category',
-                            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sund']
-                        },
-                        yAxis: {
-                            type: 'value'
-                        },
-                        series: [
-                            {
-                                data: [120, 200, 150, 80, 70, 110, 130],
-                                type: 'bar'
+                </body>
+                <script>
+                    const getOptionChart1 = async () => {
+                        try {
+                            const response = await fetch('/ServletCliente?type=10');
+
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! Status: ${response.status}`);
                             }
-                        ]
-                    };
-                };
-                const initCharts = () => {
-                    const chart1 = echarts.init(document.getElementById("chart1"));
-                    chart1.setOption(getOptionChart1());
-                };
-                window.addEventListener("load", () => {
-                    initCharts();
-                });
 
+                            const data = await response.json();
+
+                            const xAxisData = Object.keys(data.dashboardData);
+                            const seriesData = Object.values(data.dashboardData);
+
+                            return {
+                                xAxis: {
+                                    type: 'category',
+                                    data: xAxisData
+                                },
+                                yAxis: {
+                                    type: 'value'
+                                },
+                                series: [
+                                    {
+                                        data: seriesData,
+                                        type: 'bar'
+                                    }
+                                ]
+                            };
+                        } catch (error) {
+                            console.error('Error fetching chart data:', error);
+                            return {};
+                        }
+                    };
+
+                    const initCharts = async () => {
+                        const chart1 = echarts.init(document.getElementById("chart1"));
+                        const option = await getOptionChart1();
+                        chart1.setOption(option);
+                    };
+
+                    window.addEventListener("load", () => {
+                        initCharts();
+                    });
 
             </script>
 

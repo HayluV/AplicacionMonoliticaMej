@@ -5,9 +5,12 @@ import Entity.EResponse;
 import Model.Cliente;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.annotation.WebServlet;
@@ -31,10 +34,10 @@ public class ClienteController extends HttpServlet {
                 cliente.setMntsaldo(Float.parseFloat(request.getParameter("mntsaldo")));
             } else if ("3".equals(type)) {
                 // OBTENER ID CLIENTE PARA ELIMINAR
-                cliente.setIdcliente(Integer.parseInt(request.getParameter("idcliente"))); 
+                cliente.setIdcliente(Integer.parseInt(request.getParameter("idcliente")));
             } else if ("4".equals(type)) {
                 // OBTENER ID CLIENTE PARA ACTUALIZAR
-                cliente.setIdcliente(Integer.parseInt(request.getParameter("idcliente"))); 
+                cliente.setIdcliente(Integer.parseInt(request.getParameter("idcliente")));
                 cliente.setDescnombre(request.getParameter("descnombre"));
                 cliente.setDescapellido(request.getParameter("descapellido"));
                 cliente.setDescemail(request.getParameter("descemail"));
@@ -63,7 +66,7 @@ public class ClienteController extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
             String type = request.getParameter("type");
-            if ("1".equals(type)){
+            if ("1".equals(type)) {
                 List<ECliente> respuesta = (List<ECliente>) mantenimientoCliente(type, null);
                 JSONObject json = new JSONObject();
                 json.put("body", respuesta);
@@ -85,7 +88,7 @@ public class ClienteController extends HttpServlet {
                 PrintWriter out = response.getWriter();
                 out.print(json);
                 out.close();
-            }else if ("6".equals(type) ||"8".equals(type) || "9".equals(type)) {
+            } else if ("6".equals(type) || "8".equals(type) || "9".equals(type)) {
                 ECliente cliente = new ECliente();
                 int respuesta = (int) mantenimientoCliente(type, cliente);
                 JSONObject json = new JSONObject();
@@ -94,11 +97,19 @@ public class ClienteController extends HttpServlet {
                 PrintWriter out = response.getWriter();
                 out.print(json);
                 out.close();
-            }else if ("7".equals(type)) {
+            } else if ("7".equals(type)) {
                 ECliente cliente = new ECliente();
                 float respuesta = (float) mantenimientoCliente(type, cliente);
                 JSONObject json = new JSONObject();
                 json.put("body", respuesta);
+                response.setContentType("application/json");
+                PrintWriter out = response.getWriter();
+                out.print(json);
+                out.close();
+            } else if ("10".equals(type)) {
+                Map<Integer, BigDecimal> totalesPorEstado = (Map<Integer, BigDecimal>) mantenimientoCliente(type, null);
+                JSONObject json = new JSONObject();
+                json.put("dashboardData", totalesPorEstado);
                 response.setContentType("application/json");
                 PrintWriter out = response.getWriter();
                 out.print(json);
@@ -108,11 +119,14 @@ public class ClienteController extends HttpServlet {
             Logger.getLogger(ClienteController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     private Object mantenimientoCliente(String type, ECliente cliente) throws SQLException {
         EResponse<EResponse> response = new EResponse<>();
         List<ECliente> lstCliente = new ArrayList<>();
         int idCliente = 0;
-        float saldoCliente=0;
+        float saldoCliente = 0;
+        Map<Integer, BigDecimal> totalesPorEstadoMap = new HashMap<>();
+
         switch (type) {
             case "1":
                 lstCliente = Cliente.getCliente();
@@ -127,20 +141,23 @@ public class ClienteController extends HttpServlet {
             case "4": // actualizar cliente
                 response = Cliente.updateCliente(cliente);
                 break;
-            case "5": 
+            case "5":
                 idCliente = Cliente.obtenerId(cliente);
                 break;
-            case "6": 
+            case "6":
                 idCliente = Cliente.getCountCliente(cliente);
                 break;
-            case "7": 
+            case "7":
                 saldoCliente = Cliente.getTotalSaldoCliente(cliente);
                 break;
-            case "8": 
+            case "8":
                 idCliente = Cliente.getCantidadTelefonoCliente(cliente);
                 break;
             case "9":
                 idCliente = Cliente.getCountClienteEliminado(cliente);
+                break;
+            case "10":
+                totalesPorEstadoMap = Cliente.getTotalesPorEstado(cliente);
                 break;
         }
         if (type.equals("1")) {
@@ -149,10 +166,12 @@ public class ClienteController extends HttpServlet {
             return response;
         } else if (type.equals("5") || type.equals("6") || type.equals("8") || type.equals("9")) {
             return idCliente;
-        } else if (type.equals("7")){
+        } else if (type.equals("7")) {
             return saldoCliente;
+        } else if (type.equals("10")) {
+            return totalesPorEstadoMap;
         }
         return true;
     }
-    
+
 }
