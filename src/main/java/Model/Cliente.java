@@ -18,8 +18,9 @@ public class Cliente {
     private static final String UPDATE_SQL = "UPDATE cliente SET descnombre=?, descapellido=?, descemail=?, numtelefono=?, mntsaldo=? WHERE idcliente=?";
     private static final String SELECTID_SQL = "SELECT idcliente FROM cliente WHERE descnombre=? AND descapellido=? AND descemail=? AND numtelefono=? AND mntsaldo=? AND flgestado=1";
     private static final String CONTEO_SQL = "SELECT COUNT(idcliente) FROM cliente WHERE flgestado=1";
-    
     private static final String SALDO_SQL = "SELECT SUM(mntsaldo) FROM cliente WHERE flgestado=1";
+    private static final String NUMERO_SQL = "SELECT COUNT(numtelefono) FROM cliente WHERE numtelefono IS NOT NULL AND TRIM(numtelefono) != '' AND flgestado = 1";
+    private static final String CONTEOELIMINADOS_SQL = "SELECT COUNT(idcliente) FROM cliente WHERE flgestado=0";
 
     public static EResponse insertCliente(ECliente objCliente) throws SQLException {
         EResponse<EResponse> response = new EResponse<>();
@@ -183,5 +184,39 @@ public class Cliente {
             Conexion.closeConnection(cn);
         }
         return conteoSaldoCliente;
+    }
+    public static int getCantidadTelefonoCliente(ECliente objCliente) throws SQLException {
+        int cantNumeroCliente= 0;
+        Connection cn = Conexion.getConnection();
+
+        try {
+            PreparedStatement ps = cn.prepareStatement(NUMERO_SQL);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                // Obtener el valor del saldo total desde la primera columna
+               cantNumeroCliente = rs.getInt(1);
+            }
+        } catch (Exception e) {
+        } finally {
+            Conexion.closeConnection(cn);
+        }
+        return cantNumeroCliente;
+    }
+    //PARA EL DASHBOARD:
+     public static int getCountClienteEliminado(ECliente objCliente) throws SQLException {
+        int conteoIdCliente= 0;
+        Connection cn = Conexion.getConnection();
+
+        try {
+            PreparedStatement ps = cn.prepareStatement(CONTEO_SQL);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+               conteoIdCliente = rs.getInt(1);
+            }
+        } catch (Exception e) {
+        } finally {
+            Conexion.closeConnection(cn);
+        }
+        return conteoIdCliente;
     }
 }

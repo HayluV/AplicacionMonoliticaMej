@@ -60,7 +60,7 @@
                 <div class="card text-center bg-warning text-white mt-2">
                     <div class="card-body">
                         <h5 class="card-title">Total Clientes con teléfono</h5>
-                        <p class="card-text"></p>
+                        <p class="card-text" id="totalCantTelefono"></p>
                     </div>
                 </div>
             </div>
@@ -68,7 +68,6 @@
         </div>
         <jsp:include page="Modal/ClientsModals.jsp"></jsp:include>
         <jsp:include page="PartialView/Footer.jsp"></jsp:include>
-        
         <script src="Scripts/ClienteFunctions.js"></script>
        <jsp:include page="PartialView/Sidebar.jsp"></jsp:include>
     </body>

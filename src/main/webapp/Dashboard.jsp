@@ -39,6 +39,7 @@
                         <div class="row g-0">
                             <div class="card-body col-md-8 d-flex align-items-center justify-content-center">
                               <h5 class="card-title text-center">Clientes nuevos</h5>
+                              
                             </div>
                             <div class="card-body col-md-4 d-flex align-items-center justify-content-center">
                               <p class="card-text" id=""><i class="fa-solid fa-eye fa-2x"></i></p>
@@ -72,6 +73,7 @@
         </div>
         <jsp:include page="PartialView/Footer.jsp"></jsp:include>
         <jsp:include page="PartialView/Sidebar.jsp"></jsp:include>
+        <script src="Scripts/ClienteFunctions.js"></script>
         <script src="Scripts/graficos.js"></script>
     
     </body>

@@ -2,18 +2,18 @@ const getOptionChart1 = ()=>{
     return{
         xAxis: {
           type: 'category',
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sund']
         },
         yAxis: {
           type: 'value'
         },
         series: [
           {
-            data: [150, 230, 224, 218, 135, 147, 260],
-            type: 'line'
+            data: [120, 200, 150, 80, 70, 110, 130],
+            type: 'bar'
           }
         ]
-     };
+      };
 };
 const initCharts = () =>{
   const chart1 = echarts.init(document.getElementById("chart1"));
